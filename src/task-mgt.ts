@@ -1,83 +1,111 @@
-import {
-  ResultReported as ResultReportedEvent,
-  TaskCompleted as TaskCompletedEvent,
-  TaskDispatched as TaskDispatchedEvent,
-  TaskFailed as TaskFailedEvent,
-  TaskReportTimeoutUpdated as TaskReportTimeoutUpdatedEvent,
-} from "../generated/TaskMgt/TaskMgt"
-import {
-  ResultReported,
-  TaskCompleted,
-  TaskDispatched,
-  TaskFailed,
-  TaskReportTimeoutUpdated,
-} from "../generated/schema"
+import {TaskDispatched, ResultReported, TaskCompleted, TaskFailed, TaskMgt} from "../generated/TaskMgt/TaskMgt"
+import {TaskInfo, TaskCounter, DataInfo} from "../generated/schema"
+import {Bytes} from "@graphprotocol/graph-ts"
 
-export function handleResultReported(event: ResultReportedEvent): void {
-  let entity = new ResultReported(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
-  entity.worker = event.params.worker
+const counterName = "TaskCounter";
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+export function handleTaskDispatched(event: TaskDispatched): void {
+    const taskInfo = new TaskInfo(event.params.taskId);
+    const taskMgt = TaskMgt.bind(event.address);
 
-  entity.save()
+    const task = taskMgt.getTaskById(event.params.taskId);
+    taskInfo.taskType = task.taskType;
+    taskInfo.consumerPk = task.consumerPk;
+    taskInfo.tokenSymbol = task.tokenSymbol;
+    taskInfo.dataId = task.dataId;
+    taskInfo.price = task.computingInfo.price;
+    taskInfo.t = task.computingInfo.t;
+    taskInfo.n = task.computingInfo.n;
+    taskInfo.workerIds = task.computingInfo.workerIds;
+    taskInfo.results = task.computingInfo.results;
+    taskInfo.hasReported = task.computingInfo.hasReported;
+    taskInfo.reportCount = task.computingInfo.reportCount;
+    taskInfo.time = task.time;
+    taskInfo.status = task.status;
+    taskInfo.submitter = task.submitter;
+    taskInfo.code = task.code;
+
+    taskInfo.save();
+
+    // update task counter
+    increasePendingTaskCount();
+
+    // update data info
+    increaseDataPurchaseCount(task.dataId);
 }
 
-export function handleTaskCompleted(event: TaskCompletedEvent): void {
-  let entity = new TaskCompleted(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
+export function handleResultReported(event: ResultReported): void {
+    const taskMgt = TaskMgt.bind(event.address);
+    const task = taskMgt.getTaskById(event.params.taskId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    const taskInfo = TaskInfo.load(event.params.taskId);
+    if (taskInfo != null) {
+        taskInfo.results = task.computingInfo.results;
+        taskInfo.hasReported = task.computingInfo.hasReported;
+        taskInfo.reportCount = task.computingInfo.reportCount;
 
-  entity.save()
+        taskInfo.save();
+    }
 }
 
-export function handleTaskDispatched(event: TaskDispatchedEvent): void {
-  let entity = new TaskDispatched(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
-  entity.workerIds = event.params.workerIds
+export function handleTaskCompleted(event: TaskCompleted): void {
+    const taskMgt = TaskMgt.bind(event.address);
+    const task = taskMgt.getTaskById(event.params.taskId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    const taskInfo = TaskInfo.load(event.params.taskId);
+    if (taskInfo != null) {
+        taskInfo.status = task.status;
+        taskInfo.save();
 
-  entity.save()
+        // update task counter
+        decreasePendingTaskCount(true);
+    }
 }
 
-export function handleTaskFailed(event: TaskFailedEvent): void {
-  let entity = new TaskFailed(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
+export function handleTaskFailed(event: TaskFailed): void {
+    const taskMgt = TaskMgt.bind(event.address);
+    const task = taskMgt.getTaskById(event.params.taskId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    const taskInfo = TaskInfo.load(event.params.taskId);
+    if (taskInfo != null) {
+        taskInfo.status = task.status;
+        taskInfo.save();
 
-  entity.save()
+        // update task counter
+        decreasePendingTaskCount(false);
+    }
 }
 
-export function handleTaskReportTimeoutUpdated(
-  event: TaskReportTimeoutUpdatedEvent,
-): void {
-  let entity = new TaskReportTimeoutUpdated(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.timeout = event.params.timeout
+function increasePendingTaskCount(): void {
+    let taskCounter = TaskCounter.load(counterName);
+    if (!taskCounter) {
+        taskCounter = new TaskCounter(counterName);
+        taskCounter.pendingCount = 0;
+        taskCounter.completedCount = 0;
+        taskCounter.failedCount = 0;
+    }
+    taskCounter.pendingCount += 1;
+    taskCounter.save();
+}
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+function decreasePendingTaskCount(isSuccess: bool): void {
+    const taskCounter = TaskCounter.load(counterName);
+    if (taskCounter !== null) {
+        taskCounter.pendingCount -= 1;
+        if (isSuccess) {
+            taskCounter.completedCount += 1;
+        }
+        else {
+            taskCounter.failedCount += 1;
+        }
+        taskCounter.save();
+    }
+}
 
-  entity.save()
+function increaseDataPurchaseCount(dataId: Bytes): void {
+    let dataInfo = DataInfo.load(dataId);
+    if (dataInfo !== null) {
+        dataInfo.purchaseCount += 1;
+        dataInfo.save();
+    }
 }

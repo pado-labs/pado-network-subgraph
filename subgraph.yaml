@@ -39,28 +39,22 @@ dataSources:
     source:
       address: "0xE48d23f3d21e2df9F5B7317BC1b0d35FFC801289"
       abi: DataMgt
-      startBlock: 2136652
+      startBlock: 2234406 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - DataDeleted
-        - DataPrepareRegistry
-        - DataRegistered
-        - RouterUpdated
+        - DataInfo
+        - DataCounter
       abis:
         - name: DataMgt
           file: ./abis/DataMgt.json
       eventHandlers:
-        - event: DataDeleted(indexed bytes32)
-          handler: handleDataDeleted
-        - event: DataPrepareRegistry(indexed bytes32,bytes[])
-          handler: handleDataPrepareRegistry
         - event: DataRegistered(indexed bytes32)
           handler: handleDataRegistered
-        - event: RouterUpdated(address,address)
-          handler: handleRouterUpdated
+        - event: DataDeleted(indexed bytes32)
+          handler: handleDataDeleted
       file: ./src/data-mgt.ts
   - kind: ethereum
     name: FeeMgt
@@ -74,34 +68,18 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - FeeLocked
-        - FeeSettled
-        - FeeTokenAdded
-        - FeeTokenDeleted
-        - FeeTokenUpdated
-        - FeeUnlocked
-        - TokenTransfered
-        - TokenWithdrawn
+        - FeeTokenInfo
+        - FeeTokenCounter
       abis:
         - name: FeeMgt
           file: ./abis/FeeMgt.json
       eventHandlers:
-        - event: FeeLocked(indexed bytes32,string,uint256)
-          handler: handleFeeLocked
-        - event: FeeSettled(indexed bytes32,string,uint256)
-          handler: handleFeeSettled
-        - event: FeeTokenAdded(indexed string,address,uint256)
+        - event: FeeTokenAdded(indexed bytes32)
           handler: handleFeeTokenAdded
-        - event: FeeTokenDeleted(indexed string)
+        - event: FeeTokenDeleted(indexed bytes32)
           handler: handleFeeTokenDeleted
-        - event: FeeTokenUpdated(indexed string,address,uint256)
+        - event: FeeTokenUpdated(indexed bytes32)
           handler: handleFeeTokenUpdated
-        - event: FeeUnlocked(indexed bytes32,string,uint256)
-          handler: handleFeeUnlocked
-        - event: TokenTransfered(address,string,uint256)
-          handler: handleTokenTransfered
-        - event: TokenWithdrawn(address,string,uint256)
-          handler: handleTokenWithdrawn
       file: ./src/fee-mgt.ts
   - kind: ethereum
     name: TaskMgt
@@ -109,29 +87,25 @@ dataSources:
     source:
       address: "0xdd915b9e28e4356771E63469BbdF888264BB5b87"
       abi: TaskMgt
-      startBlock: 2136652
+      startBlock: 2234406
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - ResultReported
-        - TaskCompleted
-        - TaskDispatched
-        - TaskFailed
-        - TaskReportTimeoutUpdated
+        - TaskInfo
+        - TaskCounter
+        - DataInfo
       abis:
         - name: TaskMgt
           file: ./abis/TaskMgt.json
       eventHandlers:
+        - event: TaskDispatched(indexed bytes32,bytes32[])
+          handler: handleTaskDispatched
         - event: ResultReported(indexed bytes32,address)
           handler: handleResultReported
         - event: TaskCompleted(indexed bytes32)
           handler: handleTaskCompleted
-        - event: TaskDispatched(indexed bytes32,bytes32[])
-          handler: handleTaskDispatched
         - event: TaskFailed(indexed bytes32)
           handler: handleTaskFailed
-        - event: TaskReportTimeoutUpdated(uint64)
-          handler: handleTaskReportTimeoutUpdated
       file: ./src/task-mgt.ts

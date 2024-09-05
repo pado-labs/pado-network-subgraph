@@ -1,68 +1,63 @@
-import {
-  DataDeleted as DataDeletedEvent,
-  DataPrepareRegistry as DataPrepareRegistryEvent,
-  DataRegistered as DataRegisteredEvent,
-  RouterUpdated as RouterUpdatedEvent,
-} from "../generated/DataMgt/DataMgt"
-import {
-  DataDeleted,
-  DataPrepareRegistry,
-  DataRegistered,
-  RouterUpdated,
-} from "../generated/schema"
+import {DataPrepareRegistry, DataRegistered, DataDeleted, DataMgt} from "../generated/DataMgt/DataMgt";
+import {DataInfo, DataCounter} from "../generated/schema";
+import {Bytes} from "@graphprotocol/graph-ts";
 
-export function handleDataDeleted(event: DataDeletedEvent): void {
-  let entity = new DataDeleted(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.dataId = event.params.dataId
+const counterName = "DataCounter";
+export function handleDataRegistered(event: DataRegistered): void {
+    const dataInfo = new DataInfo(event.params.dataId);
+    const dataMgt = DataMgt.bind(event.address);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    const data = dataMgt.getDataById(event.params.dataId);
+    dataInfo.id = data.dataId;
+    dataInfo.tokenSymbol = data.priceInfo.tokenSymbol;
+    dataInfo.price = data.priceInfo.price;
+    dataInfo.dataContent = data.dataContent;
+    dataInfo.t = data.encryptionSchema.t;
+    dataInfo.n = data.encryptionSchema.n;
+    dataInfo.workerIds = data.workerIds;
+    dataInfo.registeredTimestamp = data.registeredTimestamp;
+    dataInfo.owner = data.owner;
+    dataInfo.status = data.status;
+    dataInfo.permissions = changetype<Bytes[]>(data.permissions);
+    dataInfo.purchaseCount = 0;
 
-  entity.save()
+    dataInfo.save();
+
+    // update data counter
+    increaseValidDataCounter();
 }
 
-export function handleDataPrepareRegistry(
-  event: DataPrepareRegistryEvent,
-): void {
-  let entity = new DataPrepareRegistry(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.dataId = event.params.dataId
-  entity.publicKeys = event.params.publicKeys
+export function handleDataDeleted(event: DataDeleted): void {
+    const dataMgt = DataMgt.bind(event.address);
+    const data = dataMgt.getDataById(event.params.dataId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    const dataInfo = DataInfo.load(event.params.dataId);
 
-  entity.save()
+    if (dataInfo !== null) {
+        dataInfo.status = data.status;
+        dataInfo.save();
+
+        // update data counter
+        decreaseValidDataCounter();
+    }
 }
 
-export function handleDataRegistered(event: DataRegisteredEvent): void {
-  let entity = new DataRegistered(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.dataId = event.params.dataId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+function increaseValidDataCounter(): void {
+    let dataCounter = DataCounter.load(counterName);
+    if (dataCounter === null) {
+        dataCounter = new DataCounter(counterName);
+        dataCounter.validCount = 0;
+        dataCounter.deletedCount = 0;
+    }
+    dataCounter.validCount += 1
+    dataCounter.save();
 }
 
-export function handleRouterUpdated(event: RouterUpdatedEvent): void {
-  let entity = new RouterUpdated(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.oldRouter = event.params.oldRouter
-  entity.newRouter = event.params.newRouter
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+function decreaseValidDataCounter(): void {
+    const dataCounter = DataCounter.load(counterName);
+    if (dataCounter !== null) {
+        dataCounter.validCount -= 1;
+        dataCounter.deletedCount += 1;
+        dataCounter.save();
+    }
 }

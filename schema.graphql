@@ -33,154 +33,62 @@ type WorkerRegistry @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
-type DataDeleted @entity(immutable: true) {
-  id: Bytes!
-  dataId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type DataInfo @entity {
+    id: Bytes!
+    dataTag: String
+    tokenSymbol: String!
+    price: BigInt!
+    dataContent: Bytes!
+    t: BigInt!
+    n: BigInt!
+    workerIds: [Bytes!]!
+    registeredTimestamp: BigInt!
+    owner: Bytes!
+    status: Int!
+    permissions: [Bytes!]!
+    purchaseCount: Int!
 }
 
-type DataPrepareRegistry @entity(immutable: true) {
-  id: Bytes!
-  dataId: Bytes! # bytes32
-  publicKeys: [Bytes!]! # bytes[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type TaskInfo @entity {
+    id: Bytes!
+    taskType: Int!
+    consumerPk: Bytes!
+    tokenSymbol: String!
+    dataId: Bytes!
+    price: BigInt!
+    t: BigInt!
+    n: BigInt!
+    workerIds: [Bytes!]!
+    results: [Bytes!]!
+    hasReported: [Boolean!]!
+    reportCount: BigInt!
+    time: BigInt!
+    status: Int!
+    submitter: Bytes!
+    code: Bytes
 }
 
-type DataRegistered @entity(immutable: true) {
-  id: Bytes!
-  dataId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type DataCounter @entity {
+    id: String!
+    validCount: Int
+    deletedCount: Int
 }
 
-type RouterUpdated @entity(immutable: true) {
-  id: Bytes!
-  oldRouter: Bytes! # address
-  newRouter: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type FeeLocked @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  tokenSymbol: String! # string
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type TaskCounter @entity {
+    id: String!
+    pendingCount: Int
+    completedCount: Int
+    failedCount: Int
 }
 
-type FeeSettled @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  tokenSymbol: String! # string
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type FeeTokenInfo @entity {
+    id: String!
+    symbol: String!
+    tokenAddress: Bytes!
+    computingPrice: BigInt!
 }
 
-type FeeTokenAdded @entity(immutable: true) {
-  id: Bytes!
-  tokenSymbol: String! # string
-  tokenAddress: Bytes! # address
-  computingPrice: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type FeeTokenDeleted @entity(immutable: true) {
-  id: Bytes!
-  tokenSymbol: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type FeeTokenUpdated @entity(immutable: true) {
-  id: Bytes!
-  tokenSymbol: String! # string
-  tokenAddress: Bytes! # address
-  computingPrice: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type FeeUnlocked @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  tokenSymbol: String! # string
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TokenTransfered @entity(immutable: true) {
-  id: Bytes!
-  from: Bytes! # address
-  tokenSymbol: String! # string
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TokenWithdrawn @entity(immutable: true) {
-  id: Bytes!
-  to: Bytes! # address
-  tokenSymbol: String! # string
-  amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type ResultReported @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  worker: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TaskCompleted @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TaskDispatched @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  workerIds: [Bytes!]! # bytes32[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TaskFailed @entity(immutable: true) {
-  id: Bytes!
-  taskId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TaskReportTimeoutUpdated @entity(immutable: true) {
-  id: Bytes!
-  timeout: BigInt! # uint64
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type FeeTokenCounter @entity {
+    id: String!
+    tokenCount: Int
 }

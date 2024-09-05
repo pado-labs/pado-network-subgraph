@@ -1,138 +1,76 @@
 import {
-  FeeLocked as FeeLockedEvent,
-  FeeSettled as FeeSettledEvent,
   FeeTokenAdded as FeeTokenAddedEvent,
   FeeTokenDeleted as FeeTokenDeletedEvent,
   FeeTokenUpdated as FeeTokenUpdatedEvent,
-  FeeUnlocked as FeeUnlockedEvent,
-  TokenTransfered as TokenTransferedEvent,
-  TokenWithdrawn as TokenWithdrawnEvent,
+  FeeMgt
 } from "../generated/FeeMgt/FeeMgt"
 import {
-  FeeLocked,
-  FeeSettled,
-  FeeTokenAdded,
-  FeeTokenDeleted,
-  FeeTokenUpdated,
-  FeeUnlocked,
-  TokenTransfered,
-  TokenWithdrawn,
+  FeeTokenInfo,
+  FeeTokenCounter
 } from "../generated/schema"
+import {Bytes, Address, store} from "@graphprotocol/graph-ts";
 
-export function handleFeeLocked(event: FeeLockedEvent): void {
-  let entity = new FeeLocked(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
-  entity.tokenSymbol = event.params.tokenSymbol
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleFeeSettled(event: FeeSettledEvent): void {
-  let entity = new FeeSettled(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
-  entity.tokenSymbol = event.params.tokenSymbol
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
+const counterName = "FeeTokenCounter";
 export function handleFeeTokenAdded(event: FeeTokenAddedEvent): void {
-  let entity = new FeeTokenAdded(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.tokenSymbol = event.params.tokenSymbol.toString()
-  entity.tokenAddress = event.params.tokenAddress
-  entity.computingPrice = event.params.computingPrice
+    const entity = new FeeTokenInfo(event.params.tokenId.toHexString());
+    const feeMgt = FeeMgt.bind(event.address);
+    const feeTokenInfo = feeMgt.getFeeTokenById(event.params.tokenId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    entity.symbol = feeTokenInfo.symbol;
+    entity.tokenAddress = feeTokenInfo.tokenAddress;
+    entity.computingPrice = feeTokenInfo.computingPrice;
+    entity.save();
 
-  entity.save()
+    // update fee token counter
+    increaseFeeTokenCount();
 }
 
 export function handleFeeTokenDeleted(event: FeeTokenDeletedEvent): void {
-  let entity = new FeeTokenDeleted(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.tokenSymbol = event.params.tokenSymbol.toString()
+    const feeTokenInfo = FeeTokenInfo.load(event.params.tokenId.toHexString());
+    if (feeTokenInfo !== null) {
+        store.remove("FeeTokenInfo", event.params.tokenId.toHexString());
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+        // update fee token counter
+        decreaseFeeTokenCount();
+    }
 }
 
 export function handleFeeTokenUpdated(event: FeeTokenUpdatedEvent): void {
-  let entity = new FeeTokenUpdated(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.tokenSymbol = event.params.tokenSymbol.toString()
-  entity.tokenAddress = event.params.tokenAddress
-  entity.computingPrice = event.params.computingPrice
+    let entity = FeeTokenInfo.load(event.params.tokenId.toHexString());
+    let isAdded = false;
+    if (entity === null) {
+        entity = new FeeTokenInfo(event.params.tokenId.toHexString());
+        isAdded = true;
+    }
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    const feeMgt = FeeMgt.bind(event.address);
+    const feeTokenInfo = feeMgt.getFeeTokenById(event.params.tokenId);
 
-  entity.save()
+    entity.symbol = feeTokenInfo.symbol;
+    entity.tokenAddress = feeTokenInfo.tokenAddress;
+    entity.computingPrice = feeTokenInfo.computingPrice;
+    entity.save();
+
+    // update fee token count
+    if (isAdded) {
+        increaseFeeTokenCount();
+    }
 }
 
-export function handleFeeUnlocked(event: FeeUnlockedEvent): void {
-  let entity = new FeeUnlocked(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.taskId = event.params.taskId
-  entity.tokenSymbol = event.params.tokenSymbol
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+function increaseFeeTokenCount() : void {
+    let feeTokenCounter = FeeTokenCounter.load(counterName);
+    if (feeTokenCounter === null) {
+        feeTokenCounter = new FeeTokenCounter(counterName);
+        feeTokenCounter.tokenCount = 0;
+    }
+    feeTokenCounter.tokenCount += 1;
+    feeTokenCounter.save();
 }
 
-export function handleTokenTransfered(event: TokenTransferedEvent): void {
-  let entity = new TokenTransfered(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.from = event.params.from
-  entity.tokenSymbol = event.params.tokenSymbol
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleTokenWithdrawn(event: TokenWithdrawnEvent): void {
-  let entity = new TokenWithdrawn(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.to = event.params.to
-  entity.tokenSymbol = event.params.tokenSymbol
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+function decreaseFeeTokenCount(): void {
+    const feeTokenCounter = FeeTokenCounter.load(counterName);
+    if (feeTokenCounter !== null) {
+        feeTokenCounter.tokenCount -= 1;
+        feeTokenCounter.save();
+    }
 }
