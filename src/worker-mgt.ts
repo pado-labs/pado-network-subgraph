@@ -1,70 +1,65 @@
 import {
-  Initialized as InitializedEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
-  SelectDataWorkers as SelectDataWorkersEvent,
-  WorkerRegistry as WorkerRegistryEvent
+  WorkerMgt,
+  WorkerRegistry as WorkerRegistryEvent,
+  WorkerDeregistry as WorkerDeregistryEvent
 } from "../generated/WorkerMgt/WorkerMgt"
 import {
-  Initialized,
-  OwnershipTransferred,
-  SelectDataWorkers,
-  WorkerRegistry
+  WorkerInfo,
+  WorkerCounter
 } from "../generated/schema"
 
-export function handleInitialized(event: InitializedEvent): void {
-  let entity = new Initialized(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.version = event.params.version
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleSelectDataWorkers(event: SelectDataWorkersEvent): void {
-  let entity = new SelectDataWorkers(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.dataId = event.params.dataId
-  entity.workerIds = event.params.workerIds
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
+const counterName = "WorkerCounter";
 
 export function handleWorkerRegistry(event: WorkerRegistryEvent): void {
-  let entity = new WorkerRegistry(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.workerId = event.params.workerId
-  entity.workerType = event.params.workerType
-  entity.owner = event.params.owner
+    let entity = new WorkerInfo(event.params.workerId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    let workerMgt = WorkerMgt.bind(event.address);
+    let worker = workerMgt.getWorkerById(event.params.workerId);
+    entity.workerType = worker.workerType;
+    entity.name = worker.name;
+    entity.desc = worker.desc;
+    entity.stakeAmount = worker.stakeAmount;
+    entity.owner = worker.owner;
+    entity.publicKey = worker.publicKey;
+    entity.time = worker.time;
+    entity.status = worker.status;
+    entity.sucTasksAmount = worker.sucTasksAmount;
+    entity.failTasksAmount = worker.failTasksAmount;
+    entity.delegationAmount = worker.delegationAmount;
 
-  entity.save()
+    entity.save();
+
+    // update worker count
+    increaseWorkerCount();
+}
+export function handleWorkerDeregistry(event: WorkerDeregistryEvent): void {
+    let entity = WorkerInfo.load(event.params.workerId);
+
+    let workerMgt = WorkerMgt.bind(event.address);
+    let worker = workerMgt.getWorkerById(event.params.workerId);
+    if (entity !== null) {
+        entity.status = worker.status;
+        entity.save();
+
+        // update worker count
+        decreaseWorkerCount();
+    }
+}
+
+function increaseWorkerCount(): void {
+    let workerCounter = WorkerCounter.load(counterName);
+    if (workerCounter === null) {
+        workerCounter = new WorkerCounter(counterName);
+        workerCounter.workerCount = 0;
+    }
+
+    workerCounter.workerCount += 1;
+    workerCounter.save();
+}
+
+function decreaseWorkerCount(): void {
+    let workerCounter = WorkerCounter.load(counterName);
+    if (workerCounter !== null) {
+        workerCounter.workerCount -= 1;
+    }
 }

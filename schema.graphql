@@ -1,38 +1,18 @@
-type Initialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type WorkerInfo @entity {
+    id: Bytes!
+    workerType: Int!
+    name: String!
+    desc: String!
+    stakeAmount: BigInt!
+    owner: Bytes!
+    publicKey: Bytes!
+    time: BigInt!
+    status: Int!
+    sucTasksAmount: BigInt!
+    failTasksAmount: BigInt!
+    delegationAmount: BigInt!
 }
 
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SelectDataWorkers @entity(immutable: true) {
-  id: Bytes!
-  dataId: Bytes! # bytes32
-  workerIds: [Bytes!]! # bytes32[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type WorkerRegistry @entity(immutable: true) {
-  id: Bytes!
-  workerId: Bytes! # bytes32
-  workerType: Int! # uint8
-  owner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
 type DataInfo @entity {
     id: Bytes!
     dataTag: String
@@ -91,4 +71,9 @@ type FeeTokenInfo @entity {
 type FeeTokenCounter @entity {
     id: String!
     tokenCount: Int
+}
+
+type WorkerCounter @entity {
+    id: String!
+    workerCount: Int
 }

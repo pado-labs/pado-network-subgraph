@@ -1,582 +1,1042 @@
 [
-  { "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
-  { "type": "receive", "stateMutability": "payable" },
   {
-    "type": "function",
-    "name": "getCompletedTaskById",
-    "inputs": [
-      { "name": "taskId", "type": "bytes32", "internalType": "bytes32" }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple",
-        "internalType": "struct Task",
-        "components": [
-          { "name": "taskId", "type": "bytes32", "internalType": "bytes32" },
-          {
-            "name": "taskType",
-            "type": "uint8",
-            "internalType": "enum TaskType"
-          },
-          { "name": "consumerPk", "type": "bytes", "internalType": "bytes" },
-          { "name": "tokenSymbol", "type": "string", "internalType": "string" },
-          { "name": "dataId", "type": "bytes32", "internalType": "bytes32" },
-          {
-            "name": "dataInfo",
-            "type": "tuple",
-            "internalType": "struct TaskDataInfo",
-            "components": [
-              {
-                "name": "dataEncryptionPk",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              { "name": "price", "type": "uint256", "internalType": "uint256" },
-              {
-                "name": "dataProviders",
-                "type": "address[]",
-                "internalType": "address[]"
-              },
-              { "name": "data", "type": "bytes[]", "internalType": "bytes[]" }
-            ]
-          },
-          {
-            "name": "computingInfo",
-            "type": "tuple",
-            "internalType": "struct ComputingInfo",
-            "components": [
-              { "name": "price", "type": "uint256", "internalType": "uint256" },
-              { "name": "t", "type": "uint32", "internalType": "uint32" },
-              { "name": "n", "type": "uint32", "internalType": "uint32" },
-              {
-                "name": "workerIds",
-                "type": "bytes32[]",
-                "internalType": "bytes32[]"
-              },
-              {
-                "name": "results",
-                "type": "bytes[]",
-                "internalType": "bytes[]"
-              },
-              {
-                "name": "hasReported",
-                "type": "bool[]",
-                "internalType": "bool[]"
-              },
-              {
-                "name": "reportCount",
-                "type": "uint32",
-                "internalType": "uint32"
-              }
-            ]
-          },
-          { "name": "time", "type": "uint64", "internalType": "uint64" },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum TaskStatus"
-          },
-          { "name": "submitter", "type": "address", "internalType": "address" },
-          { "name": "code", "type": "bytes", "internalType": "bytes" }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getPendingTasks",
     "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple[]",
-        "internalType": "struct Task[]",
-        "components": [
-          { "name": "taskId", "type": "bytes32", "internalType": "bytes32" },
-          {
-            "name": "taskType",
-            "type": "uint8",
-            "internalType": "enum TaskType"
-          },
-          { "name": "consumerPk", "type": "bytes", "internalType": "bytes" },
-          { "name": "tokenSymbol", "type": "string", "internalType": "string" },
-          { "name": "dataId", "type": "bytes32", "internalType": "bytes32" },
-          {
-            "name": "dataInfo",
-            "type": "tuple",
-            "internalType": "struct TaskDataInfo",
-            "components": [
-              {
-                "name": "dataEncryptionPk",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              { "name": "price", "type": "uint256", "internalType": "uint256" },
-              {
-                "name": "dataProviders",
-                "type": "address[]",
-                "internalType": "address[]"
-              },
-              { "name": "data", "type": "bytes[]", "internalType": "bytes[]" }
-            ]
-          },
-          {
-            "name": "computingInfo",
-            "type": "tuple",
-            "internalType": "struct ComputingInfo",
-            "components": [
-              { "name": "price", "type": "uint256", "internalType": "uint256" },
-              { "name": "t", "type": "uint32", "internalType": "uint32" },
-              { "name": "n", "type": "uint32", "internalType": "uint32" },
-              {
-                "name": "workerIds",
-                "type": "bytes32[]",
-                "internalType": "bytes32[]"
-              },
-              {
-                "name": "results",
-                "type": "bytes[]",
-                "internalType": "bytes[]"
-              },
-              {
-                "name": "hasReported",
-                "type": "bool[]",
-                "internalType": "bool[]"
-              },
-              {
-                "name": "reportCount",
-                "type": "uint32",
-                "internalType": "uint32"
-              }
-            ]
-          },
-          { "name": "time", "type": "uint64", "internalType": "uint64" },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum TaskStatus"
-          },
-          { "name": "submitter", "type": "address", "internalType": "address" },
-          { "name": "code", "type": "bytes", "internalType": "bytes" }
-        ]
-      }
-    ],
-    "stateMutability": "view"
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    "type": "function",
-    "name": "getPendingTasksByWorkerId",
-    "inputs": [
-      { "name": "workerId", "type": "bytes32", "internalType": "bytes32" }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple[]",
-        "internalType": "struct Task[]",
-        "components": [
-          { "name": "taskId", "type": "bytes32", "internalType": "bytes32" },
-          {
-            "name": "taskType",
-            "type": "uint8",
-            "internalType": "enum TaskType"
-          },
-          { "name": "consumerPk", "type": "bytes", "internalType": "bytes" },
-          { "name": "tokenSymbol", "type": "string", "internalType": "string" },
-          { "name": "dataId", "type": "bytes32", "internalType": "bytes32" },
-          {
-            "name": "dataInfo",
-            "type": "tuple",
-            "internalType": "struct TaskDataInfo",
-            "components": [
-              {
-                "name": "dataEncryptionPk",
-                "type": "bytes",
-                "internalType": "bytes"
-              },
-              { "name": "price", "type": "uint256", "internalType": "uint256" },
-              {
-                "name": "dataProviders",
-                "type": "address[]",
-                "internalType": "address[]"
-              },
-              { "name": "data", "type": "bytes[]", "internalType": "bytes[]" }
-            ]
-          },
-          {
-            "name": "computingInfo",
-            "type": "tuple",
-            "internalType": "struct ComputingInfo",
-            "components": [
-              { "name": "price", "type": "uint256", "internalType": "uint256" },
-              { "name": "t", "type": "uint32", "internalType": "uint32" },
-              { "name": "n", "type": "uint32", "internalType": "uint32" },
-              {
-                "name": "workerIds",
-                "type": "bytes32[]",
-                "internalType": "bytes32[]"
-              },
-              {
-                "name": "results",
-                "type": "bytes[]",
-                "internalType": "bytes[]"
-              },
-              {
-                "name": "hasReported",
-                "type": "bool[]",
-                "internalType": "bool[]"
-              },
-              {
-                "name": "reportCount",
-                "type": "uint32",
-                "internalType": "uint32"
-              }
-            ]
-          },
-          { "name": "time", "type": "uint64", "internalType": "uint64" },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum TaskStatus"
-          },
-          { "name": "submitter", "type": "address", "internalType": "address" },
-          { "name": "code", "type": "bytes", "internalType": "bytes" }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getTaskReportStatus",
-    "inputs": [
-      { "name": "taskId", "type": "bytes32", "internalType": "bytes32" }
-    ],
-    "outputs": [
-      { "name": "", "type": "uint8", "internalType": "enum TaskReportStatus" }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "initialize",
+    "anonymous": false,
     "inputs": [
       {
-        "name": "_router",
-        "type": "address",
-        "internalType": "contract IRouter"
-      },
-      { "name": "contractOwner", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "owner",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "renounceOwnership",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "reportResult",
-    "inputs": [
-      { "name": "taskId", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "workerId", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "result", "type": "bytes", "internalType": "bytes" }
-    ],
-    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "router",
-    "inputs": [],
-    "outputs": [
-      { "name": "", "type": "address", "internalType": "contract IRouter" }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "setDataVerifier",
-    "inputs": [
-      { "name": "taskType", "type": "uint8", "internalType": "enum TaskType" },
-      { "name": "dataVerifier", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setResultVerifier",
-    "inputs": [
-      { "name": "taskType", "type": "uint8", "internalType": "enum TaskType" },
-      { "name": "resultVerifier", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "submitTask",
-    "inputs": [
-      { "name": "taskType", "type": "uint8", "internalType": "enum TaskType" },
-      { "name": "consumerPk", "type": "bytes", "internalType": "bytes" },
-      { "name": "tokenSymbol", "type": "string", "internalType": "string" },
-      {
-        "name": "dataInfoRequest",
-        "type": "tuple",
-        "internalType": "struct TaskDataInfoRequest",
-        "components": [
-          { "name": "price", "type": "uint256", "internalType": "uint256" },
-          {
-            "name": "dataDescription",
-            "type": "string",
-            "internalType": "string"
-          },
-          {
-            "name": "dataInputAmount",
-            "type": "uint32",
-            "internalType": "uint32"
-          }
-        ]
-      },
-      {
-        "name": "computingInfoRequest",
-        "type": "tuple",
-        "internalType": "struct ComputingInfoRequest",
-        "components": [
-          { "name": "price", "type": "uint256", "internalType": "uint256" },
-          { "name": "t", "type": "uint32", "internalType": "uint32" },
-          { "name": "n", "type": "uint32", "internalType": "uint32" }
-        ]
-      },
-      { "name": "code", "type": "bytes", "internalType": "bytes" }
-    ],
-    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "submitTask",
-    "inputs": [
-      { "name": "taskType", "type": "uint8", "internalType": "enum TaskType" },
-      { "name": "consumerPk", "type": "bytes", "internalType": "bytes" },
-      { "name": "dataId", "type": "bytes32", "internalType": "bytes32" }
-    ],
-    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "submitTaskData",
-    "inputs": [
-      { "name": "taskId", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "data", "type": "bytes", "internalType": "bytes" }
-    ],
-    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "taskCount",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "taskTimeout",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "uint64", "internalType": "uint64" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "transferOwnership",
-    "inputs": [
-      { "name": "newOwner", "type": "address", "internalType": "address" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "updateRouter",
-    "inputs": [
-      {
-        "name": "_router",
-        "type": "address",
-        "internalType": "contract IRouter"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "updateTask",
-    "inputs": [
-      { "name": "taskId", "type": "bytes32", "internalType": "bytes32" }
-    ],
-    "outputs": [
-      { "name": "", "type": "uint8", "internalType": "enum TaskStatus" }
-    ],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "updateTaskReportTimeout",
-    "inputs": [
-      { "name": "timeout", "type": "uint64", "internalType": "uint64" }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "updateTasks",
-    "inputs": [],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "event",
-    "name": "Initialized",
-    "inputs": [
-      {
+        "indexed": false,
+        "internalType": "uint8",
         "name": "version",
-        "type": "uint8",
-        "indexed": false,
-        "internalType": "uint8"
+        "type": "uint8"
       }
     ],
-    "anonymous": false
+    "name": "Initialized",
+    "type": "event"
   },
   {
-    "type": "event",
-    "name": "OwnershipTransferred",
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
         "name": "previousOwner",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
+        "type": "address"
       },
       {
+        "indexed": true,
+        "internalType": "address",
         "name": "newOwner",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
+        "type": "address"
       }
     ],
-    "anonymous": false
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
-    "type": "event",
-    "name": "ResultReported",
+    "anonymous": false,
     "inputs": [
       {
-        "name": "taskId",
-        "type": "bytes32",
         "indexed": true,
-        "internalType": "bytes32"
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
       },
       {
+        "indexed": false,
+        "internalType": "address",
         "name": "worker",
-        "type": "address",
-        "indexed": false,
-        "internalType": "address"
+        "type": "address"
       }
     ],
-    "anonymous": false
+    "name": "ResultReported",
+    "type": "event"
   },
   {
-    "type": "event",
-    "name": "RouterUpdated",
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "contract IRouter",
         "name": "oldRouter",
-        "type": "address",
-        "indexed": false,
-        "internalType": "contract IRouter"
+        "type": "address"
       },
       {
+        "indexed": false,
+        "internalType": "contract IRouter",
         "name": "newRouter",
-        "type": "address",
-        "indexed": false,
-        "internalType": "contract IRouter"
+        "type": "address"
       }
     ],
-    "anonymous": false
+    "name": "RouterUpdated",
+    "type": "event"
   },
   {
-    "type": "event",
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      }
+    ],
     "name": "TaskCompleted",
-    "inputs": [
-      {
-        "name": "taskId",
-        "type": "bytes32",
-        "indexed": true,
-        "internalType": "bytes32"
-      }
-    ],
-    "anonymous": false
+    "type": "event"
   },
   {
-    "type": "event",
-    "name": "TaskDispatched",
+    "anonymous": false,
     "inputs": [
       {
-        "name": "taskId",
-        "type": "bytes32",
         "indexed": true,
-        "internalType": "bytes32"
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
       },
       {
+        "indexed": false,
+        "internalType": "bytes32[]",
         "name": "workerIds",
-        "type": "bytes32[]",
-        "indexed": false,
-        "internalType": "bytes32[]"
+        "type": "bytes32[]"
       }
     ],
-    "anonymous": false
+    "name": "TaskDispatched",
+    "type": "event"
   },
   {
-    "type": "event",
-    "name": "TaskFailed",
+    "anonymous": false,
     "inputs": [
       {
-        "name": "taskId",
-        "type": "bytes32",
         "indexed": true,
-        "internalType": "bytes32"
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
       }
     ],
-    "anonymous": false
+    "name": "TaskFailed",
+    "type": "event"
   },
   {
-    "type": "event",
-    "name": "TaskReportTimeoutUpdated",
+    "anonymous": false,
     "inputs": [
       {
-        "name": "timeout",
-        "type": "uint64",
         "indexed": false,
-        "internalType": "uint64"
+        "internalType": "uint64",
+        "name": "timeout",
+        "type": "uint64"
       }
     ],
-    "anonymous": false
+    "name": "TaskReportTimeoutUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getCompletedTaskById",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "taskId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "enum TaskType",
+            "name": "taskType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "consumerPk",
+            "type": "bytes"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenSymbol",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "dataId",
+            "type": "bytes32"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "dataEncryptionPk",
+                "type": "bytes"
+              },
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address[]",
+                "name": "dataProviders",
+                "type": "address[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "data",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct TaskDataInfo",
+            "name": "dataInfo",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint32",
+                "name": "t",
+                "type": "uint32"
+              },
+              {
+                "internalType": "uint32",
+                "name": "n",
+                "type": "uint32"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "workerIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "results",
+                "type": "bytes[]"
+              },
+              {
+                "internalType": "bool[]",
+                "name": "hasReported",
+                "type": "bool[]"
+              },
+              {
+                "internalType": "uint32",
+                "name": "reportCount",
+                "type": "uint32"
+              }
+            ],
+            "internalType": "struct ComputingInfo",
+            "name": "computingInfo",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "time",
+            "type": "uint64"
+          },
+          {
+            "internalType": "enum TaskStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "submitter",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "code",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Task",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPendingTasks",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "taskId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "enum TaskType",
+            "name": "taskType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "consumerPk",
+            "type": "bytes"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenSymbol",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "dataId",
+            "type": "bytes32"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "dataEncryptionPk",
+                "type": "bytes"
+              },
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address[]",
+                "name": "dataProviders",
+                "type": "address[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "data",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct TaskDataInfo",
+            "name": "dataInfo",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint32",
+                "name": "t",
+                "type": "uint32"
+              },
+              {
+                "internalType": "uint32",
+                "name": "n",
+                "type": "uint32"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "workerIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "results",
+                "type": "bytes[]"
+              },
+              {
+                "internalType": "bool[]",
+                "name": "hasReported",
+                "type": "bool[]"
+              },
+              {
+                "internalType": "uint32",
+                "name": "reportCount",
+                "type": "uint32"
+              }
+            ],
+            "internalType": "struct ComputingInfo",
+            "name": "computingInfo",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "time",
+            "type": "uint64"
+          },
+          {
+            "internalType": "enum TaskStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "submitter",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "code",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Task[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "workerId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getPendingTasksByWorkerId",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "taskId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "enum TaskType",
+            "name": "taskType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "consumerPk",
+            "type": "bytes"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenSymbol",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "dataId",
+            "type": "bytes32"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "dataEncryptionPk",
+                "type": "bytes"
+              },
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address[]",
+                "name": "dataProviders",
+                "type": "address[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "data",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct TaskDataInfo",
+            "name": "dataInfo",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint32",
+                "name": "t",
+                "type": "uint32"
+              },
+              {
+                "internalType": "uint32",
+                "name": "n",
+                "type": "uint32"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "workerIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "results",
+                "type": "bytes[]"
+              },
+              {
+                "internalType": "bool[]",
+                "name": "hasReported",
+                "type": "bool[]"
+              },
+              {
+                "internalType": "uint32",
+                "name": "reportCount",
+                "type": "uint32"
+              }
+            ],
+            "internalType": "struct ComputingInfo",
+            "name": "computingInfo",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "time",
+            "type": "uint64"
+          },
+          {
+            "internalType": "enum TaskStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "submitter",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "code",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Task[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getTaskById",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "taskId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "enum TaskType",
+            "name": "taskType",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes",
+            "name": "consumerPk",
+            "type": "bytes"
+          },
+          {
+            "internalType": "string",
+            "name": "tokenSymbol",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "dataId",
+            "type": "bytes32"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes",
+                "name": "dataEncryptionPk",
+                "type": "bytes"
+              },
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address[]",
+                "name": "dataProviders",
+                "type": "address[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "data",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct TaskDataInfo",
+            "name": "dataInfo",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint32",
+                "name": "t",
+                "type": "uint32"
+              },
+              {
+                "internalType": "uint32",
+                "name": "n",
+                "type": "uint32"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "workerIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "results",
+                "type": "bytes[]"
+              },
+              {
+                "internalType": "bool[]",
+                "name": "hasReported",
+                "type": "bool[]"
+              },
+              {
+                "internalType": "uint32",
+                "name": "reportCount",
+                "type": "uint32"
+              }
+            ],
+            "internalType": "struct ComputingInfo",
+            "name": "computingInfo",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "time",
+            "type": "uint64"
+          },
+          {
+            "internalType": "enum TaskStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "submitter",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes",
+            "name": "code",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct Task",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getTaskReportStatus",
+    "outputs": [
+      {
+        "internalType": "enum TaskReportStatus",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IRouter",
+        "name": "_router",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "contractOwner",
+        "type": "address"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "workerId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "result",
+        "type": "bytes"
+      }
+    ],
+    "name": "reportResult",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "router",
+    "outputs": [
+      {
+        "internalType": "contract IRouter",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum TaskType",
+        "name": "taskType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "dataVerifier",
+        "type": "address"
+      }
+    ],
+    "name": "setDataVerifier",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum TaskType",
+        "name": "taskType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "resultVerifier",
+        "type": "address"
+      }
+    ],
+    "name": "setResultVerifier",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum TaskType",
+        "name": "taskType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes",
+        "name": "consumerPk",
+        "type": "bytes"
+      },
+      {
+        "internalType": "string",
+        "name": "tokenSymbol",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "dataDescription",
+            "type": "string"
+          },
+          {
+            "internalType": "uint32",
+            "name": "dataInputAmount",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct TaskDataInfoRequest",
+        "name": "dataInfoRequest",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint32",
+            "name": "t",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "n",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct ComputingInfoRequest",
+        "name": "computingInfoRequest",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "code",
+        "type": "bytes"
+      }
+    ],
+    "name": "submitTask",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum TaskType",
+        "name": "taskType",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes",
+        "name": "consumerPk",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "dataId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "submitTask",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "submitTaskData",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "taskCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "taskTimeout",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IRouter",
+        "name": "_router",
+        "type": "address"
+      }
+    ],
+    "name": "updateRouter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "taskId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "updateTask",
+    "outputs": [
+      {
+        "internalType": "enum TaskStatus",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint64",
+        "name": "timeout",
+        "type": "uint64"
+      }
+    ],
+    "name": "updateTaskReportTimeout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "updateTasks",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]
